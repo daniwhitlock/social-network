@@ -1,7 +1,7 @@
 const addDateSuffix = date => {
     let dateStr = date.toString();
   
-    // get last char of date string
+    // get last character of date string
     const lastChar = dateStr.charAt(dateStr.length - 1);
   
     if (lastChar === '1' && dateStr !== '11') {
