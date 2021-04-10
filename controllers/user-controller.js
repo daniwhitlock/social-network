@@ -1,19 +1,54 @@
 
+const { User} = require('../models');
 
+const UserController = {
+    getAllUsers(req, res) {
+        User.find({})
+            .select('-__v')
+            .then(dbUserData => res.json(dbUserData))
+            .catch(err => {
+                console.log(err);
+                res.status(400).json(err);
+            });
+        },
 
-// /api/users
+        createUser(req, res) {
+            User.create(req.body)
+            .then(dbUserData => res.json(dbUserData))
+            .catch(err => res.status(400).json(err));
+        },
 
-// GET all users
+        getUserById(req, res ) {
+            User.findOne({ _id: req.params.id})
+            .popoulate({
+                path: 'thought',
+                select: '-__v'
+            })
+            .select('-__v')
+            .then(dbUserData => res.json(dbUserData))
+            .catch(err => {
+                console.log(err);
+                res.sendStatus(400);
+            });
+        },
 
-// GET a single user by its _id and populated thought and friend data
+        updateUser(req, res) {
+            User.findOneAndUpdate({ _id: req.params.id }, body, {new: true})
+            .then(dbUserData => {
+                if (!dbUserData) {
+                    res.status(404).json({ message: 'No user found with this id!'});
+                    return;
+                }
+                res.json(dbUserData);
+            })
+            .catch(err => res.status(400).json(err));
+        },
 
-// POST a new user:
+        deleteUser(req, res) {
+            User.findOneAndDelete({_id: req.params.id})
+            .then(dbUserData => res.json(dbUserData))
+            .catch(err => res.json(err));
+        }
+};
 
-// // example data
-// {
-//   "username": "lernantino",
-//   "email": "lernantino@gmail.com"
-// }
-// PUT to update a user by its _id
-
-// DELETE to remove user by its _id
+module.exports = UserController;

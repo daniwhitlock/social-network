@@ -14,10 +14,15 @@
 
 const router = require('express').Router();
 
+
 const {
+    getAllUsers,
+    createUser,
+    getUserById,
+    updateUser,
+    deleteUser
 
 } = require('../../controllers/user-controller');
-const { get } = require('../../models/Reaction');
 
 // /api/user
 router

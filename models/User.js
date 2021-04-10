@@ -14,7 +14,7 @@ const UserSchema = new Schema(
             required: true,
             match: [/.+\@.+\..+/] //regex
         },
-        thoughts: [
+        thought: [
             //array of _id values referencing the Thought model
             {
                 type: Schema.Types.ObjectId,
