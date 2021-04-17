@@ -21,7 +21,7 @@ const thoughtController = {
 
     // GET to get a single thought by its _id /api/thoughts/:id
     getThoughtById({ params }, res) {
-        Thought.findOne({ _id: params.id })
+        Thought.findOne({ _id: params.thoughtId })
             .populate({
                 path: 'comments',
                 select: '-__v'
@@ -33,7 +33,7 @@ const thoughtController = {
                 res.sendStatus(400);
             });
     },
-    // POST to create a new thought (don't forget to push the created thought's _id to the associated user's thoughts array field) 
+    
     //   /api/thoughts/:id
     // // example data
     // {
@@ -60,21 +60,21 @@ const thoughtController = {
             })
             .catch(err => res.json(err));
     },
-    // PUT to update a thought by its _id  /api/thoughts/:id
+    // PUT to update a thought by its _id  /api/thought/:id
     updateThought({ params, body }, res) {
-        Thought.findOneAndUpdate({ _id: params.id }, body, { new: true, runValidators: true })
+        Thought.findOneAndUpdate({ _id: params.thoughtId }, body, { new: true, runValidators: true })
             .then(dbThoughtData => {
                 if (!dbThoughtData) {
-                    res.status(404).json({ message: 'No user found with this id!' });
+                    res.status(404).json({ message: 'No thought found with this id!' });
                     return;
                 }
                 res.json(dbThoughtData);
             })
             .catch(err => res.json(err));
     },
-    // DELETE to remove a thought by its _id  /api/thoughts/:id
+    // DELETE to remove a thought by its _id  /api/thought/:id
     deleteThought({ params }, res) {
-        Thought.findOneAndDelete({ _id: params.id })
+        Thought.findOneAndDelete({ _id: params.thoughtId })
             .then(dbThoughtData => res.json(dbThoughtData))
             .catch(err => res.json(err));
     },
@@ -82,7 +82,7 @@ const thoughtController = {
     addReaction({ params, body }, res) {
         Thought.findOneAndUpdate(
             { _id: params.thoughtId },
-            { $push: { replies: body } },
+            { $push: { reactions: body } },
             { new: true, runValidators: true }
         )
             .then(dbThoughtData => {
@@ -100,7 +100,7 @@ const thoughtController = {
         Thought.findOneAndUpdate(
             { _id: params.thoughtId },
             { $pull: { reactions: { reactionId: params.reactionId } } },
-            { new: true }
+            { new: true, runValidators: true }
         )
             .then(dbThoughtData => res.json(dbThoughtData))
             .catch(err => res.json(err));
